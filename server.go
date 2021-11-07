@@ -33,9 +33,12 @@ func NewServer(ip string, port int) *Server {
 
 func (this *Server) ListMessage() {
 	for {
+		// 从通道获取消息
 		msg := <-this.Message
 		this.mapLock.Lock()
+		fmt.Println(this.OnlineMap)
 		for _, user := range this.OnlineMap {
+			fmt.Println(user.Name + "  " + msg)
 			user.C <- msg
 		}
 		this.mapLock.Unlock()
@@ -44,24 +47,26 @@ func (this *Server) ListMessage() {
 
 func (this *Server) BoardCast(user *User, msg string) {
 	sendMsg := "{" + user.Addr + "}" + user.Name + ":" + msg
+	// fmt.Println(sendMsg)
+	// 发送消息到通道
 	this.Message <- sendMsg
 }
 
 func (this *Server) Handler(conn net.Conn) {
-	// fmt.Println("连接建立成功")
+	fmt.Println("连接建立成功")
 	isLive := make(chan bool)
 
 	user := NewUser(conn, this)
 
 	user.Online()
-	user.Offline()
 
 	// 接受客户端发送的消息
 	go func() {
 		buf := make([]byte, 4096)
-		for {
+		for { // 无限循环等待消息
 			n, err := conn.Read(buf)
 			if n == 0 {
+				user.Offline()
 				this.BoardCast(user, "已下线")
 				return
 			}
@@ -83,8 +88,9 @@ func (this *Server) Handler(conn net.Conn) {
 		// 强制剔除
 		case <-isLive:
 
-		case <-time.After(time.Second * 10): // 重置定时器
-			user.SendMessgae("10s 强制下线")
+		case <-time.After(time.Second * 100): // 重置定时器
+			user.Offline()
+			user.SendMessgae("10000s 强制下线")
 			close(user.C) // 关闭管道
 			conn.Close()  // 关闭连接
 			return

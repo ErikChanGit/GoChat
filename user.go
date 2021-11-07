@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net"
 	"strings"
 )
@@ -16,6 +17,7 @@ type User struct {
 
 func NewUser(conn net.Conn, server *Server) *User {
 	userAddr := conn.RemoteAddr().String()
+	// fmt.Println("userAddr:  " + userAddr)
 
 	user := &User{
 		Name:   userAddr,
@@ -34,6 +36,7 @@ func (this *User) Online() {
 	// 用户上线
 	this.server.mapLock.Lock()
 	this.server.OnlineMap[this.Name] = this
+	fmt.Println(this.server.OnlineMap)
 	this.server.mapLock.Unlock()
 	// 广播当前用户上线消息
 	this.server.BoardCast(this, "已上线")
@@ -75,7 +78,7 @@ func (this *User) DoMessgae(msg string) {
 			this.server.mapLock.Unlock()
 
 			this.Name = newName
-			this.SendMessgae("您已用户名" + newName + "\n")
+			this.SendMessgae("您已修改用户名为： " + newName + "\n")
 		}
 	} else if len(msg) > 4 && msg[:3] == "to|" {
 		// 私聊
@@ -83,7 +86,7 @@ func (this *User) DoMessgae(msg string) {
 		user, ok := this.server.OnlineMap[target]
 		if ok {
 			message := strings.Split(msg, "|")[2]
-			user.SendMessgae(this.Name + "对您说: " + message)
+			user.SendMessgae(this.Name + "对您说: " + message + "\n")
 		}
 	} else {
 		this.server.BoardCast(this, msg)
