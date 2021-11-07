@@ -1,4 +1,8 @@
+# configure
+.vscode
+
 # Build and Release Folders
+*.exe
 bin-debug/
 bin-release/
 [Oo]bj/
