@@ -88,7 +88,7 @@ func (this *Server) Handler(conn net.Conn) {
 		// 强制剔除
 		case <-isLive:
 
-		case <-time.After(time.Second * 100): // 重置定时器
+		case <-time.After(time.Second * 10000): // 重置定时器
 			user.Offline()
 			user.SendMessgae("10000s 强制下线")
 			close(user.C) // 关闭管道

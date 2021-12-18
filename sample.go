@@ -1,17 +1,5 @@
 package main
 
-// import "fmt"
-
-// 服务端
-
-// OnlineMap
-
-// Channel
-
-// 客户端
-
-//
-
 const ( // ( 不是 {
 	BJ = iota // 值为0， 后面会自增
 	SH
