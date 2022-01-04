@@ -17,6 +17,6 @@ jobs:
 
         - name: Run Python
           run: |
-            cd tools
+            cd ${{ github.workspace }}/tools
             python new_tag.py
           
