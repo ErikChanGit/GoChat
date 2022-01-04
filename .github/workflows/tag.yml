@@ -17,6 +17,6 @@ jobs:
 
         - name: Run Python
           run: |
-            cd ${{ github.workspace }}/tools
-            python new_tag.py
+            git tag -a v0.1.8 -m "Release_v0.1.8"
+            git push origin v0.1.8
           
