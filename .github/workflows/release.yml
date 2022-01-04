@@ -1,9 +1,8 @@
 name: Create Release
 on:
   push:
-    branches: [ master ]
-    # tags:
-    #   - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    tags:
+      - 'v*'
 jobs:
   build:
     name: Create Release
@@ -11,20 +10,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Create Tag
-        uses: marvinpinto/action-automatic-releases@latest
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: v0.1.5
-          title: Tag v1.0.5
-          prerelease: false
-          files: |
-            artifacts/packages/*
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
