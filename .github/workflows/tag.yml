@@ -17,8 +17,6 @@ jobs:
 
         - name: Run Python
           run: |
-            git config --global user.email "1043490933@qq.com"
-            git config --global user.name "ErikChanGit"
-            git tag -a v0.1.8 -m "Release_v0.1.8"
-            git push origin v0.1.8
+            cd ${{ github.workspace }}/tools
+            python new_tag.py
           
